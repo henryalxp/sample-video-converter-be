@@ -1,4 +1,4 @@
-mvn clean package -Prod
+mvn clean package -Pprod
 docker build -t video-converter .
 docker stop video-converter
 docker rm video-converter
