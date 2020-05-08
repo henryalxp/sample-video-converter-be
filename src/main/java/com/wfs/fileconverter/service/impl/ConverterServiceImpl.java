@@ -58,15 +58,18 @@ public class ConverterServiceImpl implements ConverterService {
 
 		EncodingAttributes attrs = getEncodingAttributes(getAudioAttributes(), getVideoAttributes());
 
-		Path inputPath = Paths.get(fileProperties.getUploadDir())
-				.resolve(multipartFile.getOriginalFilename());
-		Path outputPath = Paths.get(fileProperties.getOutputDir())
+		Path uploadFolderPath = Paths.get(fileProperties.getUploadDir());
+		Path inputPath = uploadFolderPath.resolve(multipartFile.getOriginalFilename());
+		Path outputFolderPath = Paths.get(fileProperties.getOutputDir());
+		Path outputPath = outputFolderPath
 				.resolve(uniqueOutputName + AppConstants.DOT + fileProperties.getDefaultOutputFormat());
 
 		File tempOutputFile = null;
 
 		try {
 
+			Files.createDirectories(uploadFolderPath);
+			Files.createDirectories(outputFolderPath);
 			Files.copy(multipartFile.getInputStream(), inputPath, StandardCopyOption.REPLACE_EXISTING);
 
 			File tempInputFile = inputPath.toFile();
