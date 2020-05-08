@@ -52,6 +52,7 @@ public class ConverterServiceImpl implements ConverterService {
 	public Resource convert(MultipartFile multipartFile) {
 
 		String uniqueName = RandomStringUtils.random(10, true, true);
+		String uniqueInputName = fileProperties.getInputPrefix() + uniqueName;
 		String uniqueOutputName = fileProperties.getOutputPrefix() + uniqueName;
 
 		Instant begin = Instant.now();
@@ -59,7 +60,8 @@ public class ConverterServiceImpl implements ConverterService {
 		EncodingAttributes attrs = getEncodingAttributes(getAudioAttributes(), getVideoAttributes());
 
 		Path uploadFolderPath = Paths.get(fileProperties.getUploadDir());
-		Path inputPath = uploadFolderPath.resolve(multipartFile.getOriginalFilename());
+		Path inputPath = uploadFolderPath
+				.resolve(uniqueInputName + AppConstants.DOT + fileProperties.getTmpExtension());
 		Path outputFolderPath = Paths.get(fileProperties.getOutputDir());
 		Path outputPath = outputFolderPath
 				.resolve(uniqueOutputName + AppConstants.DOT + fileProperties.getDefaultOutputFormat());
