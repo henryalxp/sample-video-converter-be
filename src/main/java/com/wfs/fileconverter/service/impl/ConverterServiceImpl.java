@@ -25,7 +25,9 @@ import com.wfs.fileconverter.util.AppConstants;
 
 import ws.schild.jave.AudioAttributes;
 import ws.schild.jave.Encoder;
+import ws.schild.jave.EncoderException;
 import ws.schild.jave.EncodingAttributes;
+import ws.schild.jave.InputFormatException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.VideoAttributes;
 import ws.schild.jave.VideoAttributes.X264_PROFILE;
@@ -80,8 +82,7 @@ public class ConverterServiceImpl implements ConverterService {
 			tempInputFile.deleteOnExit();
 			tempOutputFile.deleteOnExit();
 
-			Encoder encoder = new Encoder();
-			encoder.encode(new MultimediaObject(tempInputFile), tempOutputFile, attrs);
+			encode(attrs, tempOutputFile, tempInputFile);
 
 			tempInputFile.delete();
 
@@ -90,11 +91,19 @@ public class ConverterServiceImpl implements ConverterService {
 			throw new RuntimeException(e);
 		}
 
-		logger.debug("File converted successfully, duration: {}", Duration.between(begin, Instant.now()));
+		logger.info("File converted successfully, duration: {}", Duration.between(begin, Instant.now()));
 
 		cleanerService.clean(outputPath);
 		return this.loadFileAsResource(outputPath);
 
+	}
+
+	private synchronized void encode(
+			EncodingAttributes attrs,
+			File tempOutputFile,
+			File tempInputFile)
+			throws InputFormatException, EncoderException {
+		new Encoder().encode(new MultimediaObject(tempInputFile), tempOutputFile, attrs);
 	}
 
 	@Override

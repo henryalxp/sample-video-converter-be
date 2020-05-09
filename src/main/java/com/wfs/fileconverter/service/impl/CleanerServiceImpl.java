@@ -29,7 +29,7 @@ public class CleanerServiceImpl implements CleanerService {
 		try {
 			Thread.sleep(Long.valueOf(fileProperties.getOutputCleaningTime()));
 			Files.delete(path);
-			logger.debug("Path {} was deleted", path.toString());
+			logger.info("Path {} was deleted", path.toString());
 		} catch (Exception e) {
 			logger.error("Error cleaning path", e);
 		}
